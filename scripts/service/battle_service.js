@@ -46,6 +46,7 @@ let battle_application = new Vue ({
             "BURN": { color: "red-400" },
             "FREEZE": { color: "blue-400" },
             "TRAP": { color: "purple-400" },
+            "SLEEP": { color: "pink-400" }
         },
         type_data: {
             "normal": { color: "bg-gray-600 text-white"},
@@ -154,13 +155,7 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
                 
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => {
-                    if (next) {
-                        next()
-                    }
-                }, () => {
-                    Vue.set(this.message, player-1, "")    
-                })
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => { if (next) { next() } }, () => { Vue.set(this.message, player-1, "") })
             }
 
             if (pokemon_obj.status.indexOf("TRAP") != -1) {
@@ -192,7 +187,6 @@ let battle_application = new Vue ({
                     })
                     this.skipTurn[player-1] = true;
                     this.freezeCount[player-1]++;
-                    return true
                 } else {
                     let a = []
                     pokemon_obj.status.splice(pokemon_obj.status.indexOf("FREEZE"), 1)
