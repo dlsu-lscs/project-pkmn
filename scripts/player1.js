@@ -6,10 +6,10 @@ function load_player1 () {
         id: 1,
         name: "Red",
         pokemons: [
-            { name: "gardevoir", moves: ["psychic", "shadow-ball"] },
             { name: "dragonite", moves: ["thunderbolt", "ice-beam", "hyper-beam"] },
             { name: "ekans", moves: ["toxic"] },
             { name: "charizard", moves: ["flamethrower", "fire-spin"] },
+            { name: "gardevoir", moves: ["psychic", "shadow-ball"] },
             { name: "mawile", moves: ["iron-defense"] },
             { name: "arbok", moves: ["toxic"]}
         ],

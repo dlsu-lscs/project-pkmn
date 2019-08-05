@@ -74,7 +74,7 @@
             </div>
             <div class= "flex-grow h-full w-full flex flex-col"> 
                 <div class = "flex-grow w-full h-full flex flex-col">
-                    <div class = "flex-grow bg-blue-700 border-white rounded-lg border-4 border-white w-full h-32" > 
+                    <div class = "flex-grow bg-blue-700 border-white rounded-lg border-4 border-white w-full h-32 z-10" > 
                         <div v-if = "message[0] && message[0] != ''" class = "flex w-full h-full text-xl text-white px-5 py-2">
                             {{message[0]}}
                         </div>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="flex flex-row-reverse flex-grow w-full h-full">
                         <div class="h-full w-3/6 flex items-center justify-center">
-                            <img id = "pokemon1" :class = "'w-4/6 ' + (animation.pokemon1 ? animation.pokemon1 : '')" :src="player1.pokemons.length != 0 ? player1.pokemons[0].sprites.front_default : ''" alt="">
+                            <img id = "pokemon1" :class = "'w-4/6 z-0 ' + (animation.pokemon1 ? animation.pokemon1 : '')" :src="player1.pokemons.length != 0 ? player1.pokemons[0].sprites.front_default : ''" alt="">
                         </div>
                         <div class= "h-full w-3/6 flex items-center justify-center">
                             <div class = "w-4/6 bg-blue-900 rounded-lg py-3 px-3"> 
@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 <div class = "flex-grow w-full h-full flex flex-col-reverse">
-                    <div class = "bg-blue-700 border-white rounded-lg border-4 border-white w-full h-32" > 
+                    <div class = "bg-blue-700 border-white rounded-lg border-4 border-white w-full h-32 z-10" > 
                         <div v-if = "message[1] && message[1] != ''" class = "flex w-full h-full text-xl text-white px-5 py-2">
                                 {{message[1]}}
                         </div>
@@ -133,7 +133,7 @@
                     
                     <div class="flex flex-row flex-grow w-full h-full">
                         <div class="h-full w-3/6 flex items-center justify-center">
-                            <img id = "pokemon2" :class = "'w-4/6 ' + (animation.pokemon2 ? animation.pokemon2 : '')" :src="player2.pokemons.length != 0 ? player2.pokemons[0].sprites.back_default : ''" alt="">
+                            <img id = "pokemon2" :class = "'w-4/6 z-0 ' + (animation.pokemon2 ? animation.pokemon2 : '')" :src="player2.pokemons.length != 0 ? player2.pokemons[0].sprites.back_default : ''" alt="">
                         </div>
                         <div class= "h-full w-3/6 flex items-center justify-center">
                             <div class = "w-4/6 bg-blue-900 rounded-lg py-3 px-3"> 
