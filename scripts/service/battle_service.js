@@ -104,7 +104,6 @@ let battle_application = new Vue ({
                 let sleepRNG = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
                 if (sleepRNG == 1 && sleepCount[player-1] < 4) {
                     Vue.set(this.message, player-1, pokemon_obj.name.toUpperCase() + " continues to sleep!");
-                    setInterval(() => { Vue.set(this.message, player-1, null) }, 1000)
                     this.sleepCount[player-1]++;
                     this.skipTurn[player-1] = true;
                 } else {
@@ -130,7 +129,6 @@ let battle_application = new Vue ({
                         },
                         priority: -9
                     })
-                    return true
                 } else {
                     this.skipTurn[player-1] = false;
                 }
@@ -141,13 +139,10 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
 
-                this.updateHP(player, -Math.round(pokemon_obj.hp/8), (next) => {
-                    if (next) {
-                        next()
-                    }
-                }, () => {
+                this.updateHP(player, -Math.round(pokemon_obj.hp/8), () => {
                     Vue.set(this.message, player-1, "")    
-                })
+                }, callback)
+                return
             }
 
             if (pokemon_obj.status.indexOf("BURN") != -1) {
@@ -155,7 +150,8 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
                 
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => { if (next) { next() } }, () => { Vue.set(this.message, player-1, "") })
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), () => { Vue.set(this.message, player-1, "") }, callback)
+                return
             }
 
             if (pokemon_obj.status.indexOf("TRAP") != -1) {
@@ -163,11 +159,7 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
                 
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => {
-                    if (next) {
-                        next()
-                    }
-                }, () => {
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), callback, () => {
                     Vue.set(this.message, player-1, "")    
                 })
             }
@@ -192,8 +184,9 @@ let battle_application = new Vue ({
                     pokemon_obj.status.splice(pokemon_obj.status.indexOf("FREEZE"), 1)
                     this.skipTurn[player-1] = false;
                     Vue.set(this.message, player-1, "[" + player_obj.name + "] " + pokemon_obj.name.toUpperCase() + " thawed out of the ice!");
-                    console.log()
-                    setInterval(() => { Vue.set(this.message, player-1, null) }, 1000)
+                    setTimeout(() => { Vue.set(this.message, player-1, null) }, 1000)
+                    
+                    console.log("[" + player_obj.name + "] " + pokemon_obj.name.toUpperCase() + " thawed out of the ice!");
                     this.freezeCount[player-1] = 0;
                 }
             }
