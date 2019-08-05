@@ -1,5 +1,5 @@
-# Project Pokemon Term 3
-## Junior Officers - Research and Development 
+# DLSU LSCS - Project Pokemon 
+## Junior Officers Term 3 - Research and Development 
 
 ### To Run
 Just open index.html
