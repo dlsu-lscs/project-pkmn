@@ -129,6 +129,7 @@ let battle_application = new Vue ({
                         },
                         priority: -9
                     })
+                    return
                 } else {
                     this.skipTurn[player-1] = false;
                 }
