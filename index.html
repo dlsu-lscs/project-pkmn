@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./img/pokeball.png" type="sicon">
+    <title> Pokemon JS </title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <link href="./libraries/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./libraries/animate.css">
+    
+    <style>
+        @font-face {
+            font-family: "Pokemon";
+            src: url('./fonts/pokemon-emerald-pro.ttf')  format('truetype');
+        }
+
+        body * {
+            outline: none !important;
+        }
+
+        body {
+            font-family: "Pokemon" !important;
+            width: 1200px !important;
+            height: 700px !important;
+        }
+
+        body > div#main {
+            width: 600px !important;
+            height: 600px !important;
+        }
+
+        #battle {
+            background-image: url("./img/bg.jpg")
+        }
+    </style>
+</head>
+<div id = "loading" class="hidden h-50 w-full fixed left-0 bottom-0 z-10">
+    <div class="bg-black border-blue-300 border-4 inset-0 h-full w-1/2 mx-auto rounded-lg my-5 flex items-center justifiy-center"> 
+        <img src="./img/pokeball.png" class = "animated infinite rotateIn bounce h-20 w-20 z-10 p-5" alt="">
+        <span class = "text-white message p-5 text-3xl"> 
+            LOADING 
+        </span>
+    </div>
+</div>
+            
+<body class = "bg-blue-900 container mx-auto flex items-center justifiy-center">
+    <div id = "main" class="container bg-gray-800 mx-auto p-0 px-0 rounded-lg flex flex-row items-center justifiy-center">
+        <div id = "start" class = "container px-20 flex flex-col items-center justifiy-center">
+            <img src="./img/pokeball.png" class = "h-20 w-20 z-10" alt="">
+            <h1 class = "text-3xl text-blue-300 tracking-widest m-0 p-0"> POKEMON BATTLE SIMULATOR </h1>
+            <h1 class = "text-3xl text-blue-300 tracking-widest m-0 p-0"> LSCS-RND JUNIOR OFFICERS </h1>
+            <button id = "human-human" class="battle tracking-wider relative border-4 border-gray outline-none bg-blue-800 flex items-center w-full justifiy-center hover:bg-blue-600 m-2 px-20 mx-auto text-white text-2xl rounded-full">
+                <span class = "pl-5"> HUMAN VS HUMAN </span>
+            </button>
+            <button id = "human-computer" class="battle tracking-wider relative border-4 border-gray outline-none bg-blue-800 flex items-center w-full justifiy-center hover:bg-blue-600 m-2 px-20 mx-auto text-white text-2xl rounded-full">
+                <span class = "pl-5"> HUMAN VS COMPUTER </span>
+            </button>
+            <button id = "computer-computer" class="battle tracking-wider relative border-4 border-gray outline-none bg-blue-800 flex items-center w-full justifiy-center hover:bg-blue-600 m-2 px-20 mx-auto text-white text-2xl rounded-full">
+                <span class = "pl-5"> COMPUTER VS COMPUTER </span>
+            </button>
+            <button id = "modify-computer" class= "tracking-wider relative border-4 border-gray outline-none bg-blue-800 flex items-center w-full justifiy-center hover:bg-blue-600 m-2 px-20 mx-auto text-white text-2xl rounded-full">
+                <span class = "pl-5"> HOW TO MODIFY COMPUTER? </span>
+            </button>
+        </div>
+        <div id="battle" class = "hidden container flex relative flex-col h-full w-full items-center justifiy-center">
+            <div class= "text-2xl text-black relative tracking-widest w-full"> 
+                <h1 class = "mx-auto text-center"> POKEMON BATTLE </h1>
+                <button id = "exit-battle" v-on:click="exit" class="absolute h-auto w-10 top-0 right-0 outline-none text-2xl hover:bg-red-500 hover:text-white text-red-500 font-sans"> X </button>
+            </div>
+            <div class= "flex-grow h-full w-full flex flex-col"> 
+                <div class = "flex-grow w-full h-full flex flex-col">
+                    <div class = "flex-grow bg-blue-700 border-white rounded-lg border-4 border-white w-full h-32" > 
+                        <div v-if = "message[0] && message[0] != ''" class = "flex w-full h-full text-xl text-white px-5 py-2">
+                            {{message[0]}}
+                        </div>
+                        <div v-else class = "flex w-full h-full">                
+                            <button :disabled = "player1.cpu == true" v-for = "(action, index) in action_keys[0]" v-on:click= "actions[0][index]" :class = "(player1.cpu ? 'opacity-50' : '') + ' w-full justify-center text-xl text-white outline-none hover:bg-blue-600'" v-html="action"></button>
+                            <div v-for = "i in (new Array(action_keys[0].length <= 5 ? 5 - action_keys[0].length : 0))" class="w-full justify-center text-xl text-white"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-row-reverse flex-grow w-full h-full">
+                        <div class="h-full w-3/6 flex items-center justify-center">
+                            <img id = "pokemon1" :class = "'w-4/6 ' + (animation.pokemon1 ? animation.pokemon1 : '')" :src="player1.pokemons.length != 0 ? player1.pokemons[0].sprites.front_default : ''" alt="">
+                        </div>
+                        <div class= "h-full w-3/6 flex items-center justify-center">
+                            <div class = "w-4/6 bg-blue-900 rounded-lg py-3 px-3"> 
+                                <div class="w-full flex items-center justify-left">
+                                        <img v-for = "p in player1.pokemons" src="./img/pokeball.png" alt="" :class="'rounded-full w-3 mr-1' + ((p.hp == 0) ? ' opacity-25 bg-black ' : '' )">
+                                </div>
+                                <div class = "w-full flex-grow">
+                                    <span class = "leading-none text-white text-xl p-0 m-0"> 
+                                        {{player1.pokemons.length != 0 ? player1.pokemons[0].name.toUpperCase() : ''}}  
+                                    </span>
+                                    <span class = "leading-none text-gray-600 text-xl p-0 m-0">
+                                        {{player1.name ? player1.name.toUpperCase() : ''}}
+                                    </span>
+                                </div>
+                                <div v-if="player1.pokemons.length != 0" class = "flex-grow relative w-full h-4 bg-black">
+                                    <div v-if = "player1.pokemons[0].hp/player1.pokemons[0].max_hp > 0.7" class="absolute w-full h-full left-0 top-0 leading-none bg-green-400 z-10'" :style="'width:' + player1.pokemons[0].hp/player1.pokemons[0].max_hp * 100 + '%'"> </div>
+                                    <div v-else-if = "player1.pokemons[0].hp/player1.pokemons[0].max_hp > 0.2" class="absolute w-full h-full left-0 top-0 leading-none bg-yellow-600 z-10'" :style="'width:' + player1.pokemons[0].hp/player1.pokemons[0].max_hp * 100 + '%'"></div>
+                                    <div v-else class="absolute w-full h-full left-0 top-0 leading-none bg-red-700 z-10'" :style="'width:' + player1.pokemons[0].hp/player1.pokemons[0].max_hp * 100 + '%'"> </div>
+
+
+                                    <div class="absolute w-full h-full text-left px-5 text-white leading-none z-10">
+                                        {{player1.pokemons[0].hp}}/{{player1.pokemons[0].max_hp}}
+                                    </div>
+                                </div>
+                                <div v-if = "player1.pokemons.length != 0" class = "flex-grow relative w-full h-4">
+                                    <span  v-for = "st in player1.pokemons[0].status" :class = "'rounded-full px px-2 bg-' + status_data[st].color"> 
+                                        {{st}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class = "flex-grow w-full h-full flex flex-col-reverse">
+                    <div class = "bg-blue-700 border-white rounded-lg border-4 border-white w-full h-32" > 
+                        <div v-if = "message[1] && message[1] != ''" class = "flex w-full h-full text-xl text-white px-5 py-2">
+                                {{message[1]}}
+                        </div>
+                        <div v-else class = "flex w-full h-full">                
+                            <button :disabled = "player2.cpu == true" v-for = "(action, index) in action_keys[1]" v-on:click= "actions[1][index]" :class = "(player2.cpu ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-600') + ' w-full justify-center text-xl text-white outline-none'"v-html="action"> </button>
+                            <div v-for = "i in (new Array(action_keys[1].length <= 5 ? 5 - action_keys[1].length : 0))" class="w-full  justify-center text-xl text-white"></div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="flex flex-row flex-grow w-full h-full">
+                        <div class="h-full w-3/6 flex items-center justify-center">
+                            <img id = "pokemon2" :class = "'w-4/6 ' + (animation.pokemon2 ? animation.pokemon2 : '')" :src="player2.pokemons.length != 0 ? player2.pokemons[0].sprites.back_default : ''" alt="">
+                        </div>
+                        <div class= "h-full w-3/6 flex items-center justify-center">
+                            <div class = "w-4/6 bg-blue-900 rounded-lg py-3 px-3"> 
+                                <div class="w-full flex items-center justify-left">
+                                        <img v-for = "p in player2.pokemons" src="./img/pokeball.png" alt="" :class="'rounded-full w-3 mr-1' + ((p.hp == 0) ? ' opacity-25 bg-black ' : '' )">
+                                </div>
+                                <div class = "w-full flex-grow">
+                                    <span class = "leading-none text-white text-xl p-0 m-0"> 
+                                        {{player2.pokemons.length != 0 ? player2.pokemons[0].name.toUpperCase() : ''}}  
+                                    </span>
+                                    <span class = "leading-none text-gray-600 text-xl p-0 m-0">
+                                        {{player2.name ? player2.name.toUpperCase(): ''}}
+                                    </span>
+                                </div>
+                                <div v-if="player2.pokemons.length != 0" class = "flex-grow relative w-full h-4 bg-black">
+                                    <div v-if = "player2.pokemons[0].hp/player2.pokemons[0].max_hp > 0.7" class="absolute w-full h-full left-0 top-0 leading-none bg-green-400 z-10'" :style="'width:' + player2.pokemons[0].hp/player2.pokemons[0].max_hp * 100 + '%'"></div>
+                                    <div v-else-if = "player2.pokemons[0].hp/player2.pokemons[0].max_hp > 0.2" class="absolute w-full h-full left-0 top-0 leading-none bg-yellow-600 z-10'" :style="'width:' + player2.pokemons[0].hp/player2.pokemons[0].max_hp * 100 + '%'"></div>
+                                    <div v-else class="absolute w-full h-full left-0 top-0 leading-none bg-red-700 z-10'" :style="'width:' + player2.pokemons[0].hp/player2.pokemons[0].max_hp * 100 + '%'"></div>
+                                    <div class="absolute w-full h-full text-left px-5 text-white leading-none z-10">
+                                        {{player2.pokemons[0].hp}}/{{player2.pokemons[0].max_hp}}
+                                    </div>
+                                </div>
+                                <div v-if = "player2.pokemons.length != 0" class = "flex-grow relative w-full h-4">
+                                    <span  v-for = "st in player2.pokemons[0].status" :class = "'rounded-full px px-2 bg-' + status_data[st].color"> 
+                                        {{st}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- SCRIPTS -->
+<script src="./scripts/service/data_service.js"></script>
+
+<script src="./scripts/player1.js"></script>
+<script src="./scripts/player2.js"></script>
+
+<script src="./scripts/service/battle_utility.js"></script>
+<script src="./scripts/service/battle_service.js"></script>
+<script src="./scripts/app.js"></script>
+
+</html>
