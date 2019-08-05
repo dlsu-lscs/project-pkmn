@@ -8,10 +8,10 @@ Just open index.html
 * Task: You will be editing scripts/player2.js
 * To test your AI, use the Human vs. Computer.
 * There are some moves which will not be considered: 
-    field effect moves, 
-    one-sided field effect moves,
-    unique moves
-* Lookup pokeapi to search for ideal pokemon and movesets
+    * field effect moves, 
+    * one-sided field effect moves,
+    * unique moves
+* Lookup pokeapi to search for ideal pokemon and move sets for pokemons
 
 ### References
 Got some code for the mechanics here:
