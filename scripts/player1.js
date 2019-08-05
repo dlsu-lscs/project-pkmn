@@ -6,12 +6,12 @@ function load_player1 () {
         id: 1,
         name: "Red",
         pokemons: [
-            { name: "dragonite", moves: ["thunderbolt", "ice-beam", "hyper-beam"] },
-            { name: "ekans", moves: ["toxic"] },
-            { name: "charizard", moves: ["flamethrower", "fire-spin"] },
-            { name: "gardevoir", moves: ["psychic", "shadow-ball"] },
-            { name: "mawile", moves: ["iron-defense"] },
-            { name: "arbok", moves: ["toxic"]}
+            { name: "dragonite", moves: ["thunderbolt", "ice-beam", "hyper-beam", "blizzard"] },
+            { name: "tyranitar", moves: ["giga-impact", "crunch", "rock-slide", "earthquake"] },
+            { name: "charizard", moves: ["flamethrower", "fire-spin", "fire-blast", "dragon-pulse"] },
+            { name: "gardevoir", moves: ["psychic", "shadow-ball", "moonblast", "hypnosis"] },
+            { name: "pidgeot", moves: ["sky-attack", "quick-attack", "agility", "air-slash"] },
+            { name: "arbok", moves: ["toxic", "poison-jab", "acid", "screech"]}
         ],
         think_menu (self, enemy_trainer) {
             // 0 - FIGHT, 1 - SWITCH

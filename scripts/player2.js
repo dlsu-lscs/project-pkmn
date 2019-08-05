@@ -5,12 +5,12 @@ function load_player2 () {
         id: 2,
         name: "Ash Ketchum",
         pokemons: [
-            { name: "meganium", moves: ["giga-drain", "toxic", "bullet-seed"]},
-            { name: "empoleon", moves: ["swagger", "ice-beam", "hydro-pump", "swords-dance"] },
-            { name: "milotic", moves: ["recover", "surf"] },
-            { name: "raticate", moves: ["tackle", "swords-dance"] },
-            { name: "venusaur", moves: ["razor-leaf"] },
-            { name: "magikarp", moves: ["tackle"] }
+            { name: "blissey", moves: ["soft-boiled", "toxic", "seismic-toss", "thunder-wave"] },
+            { name: "garchomp", moves: ["draco-meteor", "stone-edge", "iron-head", "earthquake"]},
+            { name: "slaking", moves: ["retaliate", "sucker-punch", "earthquake", "fire-blast"] },
+            { name: "gardevoir", moves: ["psyshock", "will-o-wisp", "moonblast", "psychic"] },
+            { name: "blaziken", moves: ["high-jump-kick", "stone-edge", "flare-blitz", "swords-dance"] },
+            { name: "pikachu", moves: ["quick-attack", "thunderbolt", "iron-tail", "thunder"] }
         ],
         think_menu (self, enemy_trainer) {
             // 0 - FIGHT, 1 - SWITCH

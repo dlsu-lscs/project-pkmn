@@ -51,6 +51,7 @@ let battle_application = new Vue ({
             "normal": { color: "bg-gray-600 text-white"},
             "fire": { color: "bg-red-600 text-white"},
             "water": { color: "bg-blue-600 text-white"},
+            "fighting": { color: "bg-red-600 text-white"},
             "electric": { color: "bg-yellow-600 text-black"},
             "grass": { color: "bg-green-600 text-white"},
             "ice": { color: "bg-blue-200 text-black"},
@@ -594,7 +595,7 @@ let battle_application = new Vue ({
 
             let damages = battle_application.calculate_dmg(source, target, move)
 
-            let damage = damages[0]
+            let damage = (move.name == "seismic-toss") ? 100 : damages[0]
             if (onehit)
                 damage = 999
 
@@ -1230,9 +1231,10 @@ let battle_application = new Vue ({
             Vue.set(this.action_keys, player.name == this.player1.name ? 0 : 1, act_key)
 
             if (player.cpu) {
-                this.actions[player.id-1][player.think_move(
+                let run = this.actions[player.id-1][player.think_move(
                     player.id == 1 ? player1.pokemons[0] : player2.pokemons[0],
-                    player.id == 1 ? player2.pokemons[0] : player1.pokemons[0])]()
+                    player.id == 1 ? player2.pokemons[0] : player1.pokemons[0])]
+                run()
             }
         },
         exit: function () {
@@ -1315,10 +1317,12 @@ let battle_application = new Vue ({
 
             let pkmn = (player.id == 1 ? player1.pokemons[0] : player2.pokemons[0])
             if (player.cpu) {
-                this.actions[player.id-1][player.think_switch(
+                let run = this.actions[player.id-1][player.think_switch(
                         player.id == 1 ? player1.pokemons[0] : player2.pokemons[0], 
                         player.id == 1 ? player2.pokemons[0] : player1.pokemons[0],
-                        player1.pokemons[0])]()
+                        player1.pokemons[0])]
+
+                if (run) run()
             }
         },
         blank: function () { 
@@ -1339,8 +1343,9 @@ let battle_application = new Vue ({
 
             if (player_object.cpu) 
                 setTimeout( () => {
-                    battle_application.actions[player_object.id-1][player_object.think_menu(player_object, player == 1 ? this.player2 : this.player1)]()
-                }, 2000)
+                    let run = battle_application.actions[player_object.id-1][player_object.think_menu(player_object, player == 1 ? this.player2 : this.player1)]
+                    run()
+                }, 1000)
         },
         start: function (player1, player2) {
             this.player1 = player1
