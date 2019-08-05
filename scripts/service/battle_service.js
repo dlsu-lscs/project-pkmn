@@ -140,9 +140,11 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
 
-                this.updateHP(player, -Math.round(pokemon_obj.hp/8), () => {
-                    Vue.set(this.message, player-1, "")    
-                }, callback)
+                this.updateHP(player, -Math.round(pokemon_obj.hp/8), (next) => {
+                    Vue.set(this.message, player-1, "")
+                    if (callback)
+                        callback()    
+                })
                 return
             }
 
@@ -151,7 +153,11 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
                 
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), () => { Vue.set(this.message, player-1, "") }, callback)
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => { 
+                    Vue.set(this.message, player-1, "") 
+                    if (next)
+                        next()    
+                }, callback)
                 return
             }
 
@@ -160,9 +166,11 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
                 
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), callback, () => {
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => {
                     Vue.set(this.message, player-1, "")    
-                })
+                    if (next)
+                        next()    
+                }, callback)
             }
 
             if (pokemon_obj.status.indexOf("FREEZE") != -1) {

@@ -27,12 +27,13 @@ function load_player2 () {
             let n = 0
             
             for (let i = 0; i < current_team.length; i++) {
-                if (current_team[i].name == current_pokemon.name && current_team[i].hp != 0) {
+                if (current_team[i].name != current_pokemon.name && current_team[i].hp != 0) {
                     n++
                 }
             }
 
             let choice = Math.floor(Math.random()*n)
+            console.log(choice)
             return choice
             
         }
