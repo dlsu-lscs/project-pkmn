@@ -1067,8 +1067,7 @@ let battle_application = new Vue ({
             console.log(msg)
 
             battle_application.updateHP (player.id == 2 ? 1 : 2, -damage, (callback) => {
-                // let ailmentChance = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
-                ailmentChance = 0
+                let ailmentChance = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
                 let msg_array = [""]
                 if (move.meta.ailment_chance > ailmentChance) {
                     if (move.meta.ailment.name.toUpperCase() == "CONFUSION" || target.status.length == 0) {
