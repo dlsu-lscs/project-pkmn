@@ -230,7 +230,7 @@ let battle_application = new Vue ({
                     player.pokemons[0].hp >= player.pokemons[0].max_hp) {
                     
                     clearInterval(updating)
-                    if (player.pokemons[0].hp == 0) {
+                    if (player.pokemons[0].hp <= 0) {
                         if (callback) 
                             callback(() => {
                                 console.log("[" + player.name.toUpperCase() + "] " + player.pokemons[0].name.toUpperCase() + " fainted!")
@@ -1234,7 +1234,7 @@ let battle_application = new Vue ({
                 let run = this.actions[player.id-1][player.think_move(
                     player.id == 1 ? player1.pokemons[0] : player2.pokemons[0],
                     player.id == 1 ? player2.pokemons[0] : player1.pokemons[0])]
-                run()
+                if (run) run()
             }
         },
         exit: function () {
@@ -1344,7 +1344,7 @@ let battle_application = new Vue ({
             if (player_object.cpu) 
                 setTimeout( () => {
                     let run = battle_application.actions[player_object.id-1][player_object.think_menu(player_object, player == 1 ? this.player2 : this.player1)]
-                    run()
+                    if (run) run()
                 }, 1000)
         },
         start: function (player1, player2) {
