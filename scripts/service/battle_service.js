@@ -70,7 +70,8 @@ let battle_application = new Vue ({
         },
         skipTurn: [false, false],
         sleepCount: [0, 0],
-        freezeCount: [0, 0]
+        freezeCount: [0, 0],
+        trapCount: [0, 0]
      },
     methods: {
         endTurn: function () {
@@ -106,12 +107,15 @@ let battle_application = new Vue ({
                     Vue.set(this.message, player-1, pokemon_obj.name.toUpperCase() + " continues to sleep!");
                     this.sleepCount[player-1]++;
                     this.skipTurn[player-1] = true;
+                    return
                 } else {
                     pokemon_obj.status.splice(pokemon_obj.status.indexOf("SLEEP"), 1)
                     this.skipTurn[player-1] = false;
                     Vue.set(this.message, player-1, pokemon_obj.name.toUpperCase() + " woke up!");
                     setInterval(() => { Vue.set(this.message, player-1, null) }, 1000)
                     this.sleepCount[player-1] = 0;
+                    if (callback) callback()
+                    return
                 }
             }
 
@@ -132,6 +136,8 @@ let battle_application = new Vue ({
                     return
                 } else {
                     this.skipTurn[player-1] = false;
+                    if (callback) callback()
+                    return
                 }
             }
 
@@ -140,10 +146,9 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
 
-                this.updateHP(player, -Math.round(pokemon_obj.hp/8), (next) => {
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), () => {
                     Vue.set(this.message, player-1, "")
-                    if (callback)
-                        callback()    
+                    if (callback) callback()
                 })
                 return
             }
@@ -153,24 +158,29 @@ let battle_application = new Vue ({
                 Vue.set(this.message, player-1, msg);
                 console.log(msg)
                 
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => { 
-                    Vue.set(this.message, player-1, "") 
-                    if (next)
-                        next()    
-                }, callback)
+                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), () => {
+                    Vue.set(this.message, player-1, "")
+                    if (callback) callback()
+                })
                 return
             }
 
             if (pokemon_obj.status.indexOf("TRAP") != -1) {
-                let msg = "[" + player_obj.name.toUpperCase() + "] " + pokemon_obj.name.toUpperCase() + " is trapped in a vortex."
-                Vue.set(this.message, player-1, msg);
-                console.log(msg)
-                
-                this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), (next) => {
-                    Vue.set(this.message, player-1, "")    
-                    if (next)
-                        next()    
-                }, callback)
+                if (this.trapCount[player-1] < 5) {
+                    let msg = "[" + player_obj.name.toUpperCase() + "] " + pokemon_obj.name.toUpperCase() + " is trapped in a vortex."
+                    Vue.set(this.message, player-1, msg);
+                    console.log(msg)
+                    
+                    this.updateHP(player, -Math.round(pokemon_obj.max_hp/8), () => {
+                        Vue.set(this.message, player-1, "")
+                        if (callback) callback()
+                    })
+                    this.trapCount[player-1] ++
+                    return
+                } else {
+                    this.trapCount[player-1] = 1
+                    pokemon_obj.status = []
+                }
             }
 
             if (pokemon_obj.status.indexOf("FREEZE") != -1) {
@@ -188,20 +198,23 @@ let battle_application = new Vue ({
                     })
                     this.skipTurn[player-1] = true;
                     this.freezeCount[player-1]++;
+                    if (callback) callback()
+                    return
                 } else {
                     let a = []
                     pokemon_obj.status.splice(pokemon_obj.status.indexOf("FREEZE"), 1)
                     this.skipTurn[player-1] = false;
                     Vue.set(this.message, player-1, "[" + player_obj.name + "] " + pokemon_obj.name.toUpperCase() + " thawed out of the ice!");
                     setTimeout(() => { Vue.set(this.message, player-1, null) }, 1000)
-                    
                     console.log("[" + player_obj.name + "] " + pokemon_obj.name.toUpperCase() + " thawed out of the ice!");
                     this.freezeCount[player-1] = 0;
+
+                    if (callback) callback()
+                    return
                 }
             }
-            
-            if (callback) callback()
 
+            if (callback) callback()
             return pokemon_obj
         },
         updateHP: function (player_id, hp_delta, callback, next) {
@@ -717,7 +730,7 @@ let battle_application = new Vue ({
                 return
             }
 
-            if (move.meta.ailment.name.toUpperCase() == "CONFUSION" || target.status.length == 0) {
+            if (target.status.length == 0) {
                 battle_application.animation.pokemon1 = ""
                 battle_application.animation.pokemon2 = ""
                 if (player.name == player1.name) 
@@ -727,18 +740,6 @@ let battle_application = new Vue ({
                 msg_array.push("[" + player.name.toUpperCase() + "] " + target.name.toUpperCase() +  " was inflicted " + move.meta.ailment.name.toUpperCase())
                 target.status.push(move.meta.ailment.name.toUpperCase())
             } 
-
-            if (target.status.length == 1 && move.meta.ailment.name.toUpperCase() != "CONFUSION" && (target.status[0] == "CONFUSION" || target.status[0] == "TRAP")) {
-                battle_application.animation.pokemon1 = ""
-                battle_application.animation.pokemon2 = ""
-                if (player.name == player1.name) 
-                    battle_application.animation.pokemon2 = "animated shake"
-                else 
-                    battle_application.animation.pokemon1 = "animated shake"
-
-                msg_array.push("[" + player.name.toUpperCase() + "] " + target.name.toUpperCase() +  " was inflicted " + move.meta.ailment.name.toUpperCase())
-                target.status.push(move.meta.ailment.name.toUpperCase())   
-            }
             
             let msgs = setInterval(() => {
                 let mess = msg_array.pop()
@@ -1315,7 +1316,7 @@ let battle_application = new Vue ({
                 let run = this.actions[player.id-1][player.think_switch(
                         player.id == 1 ? player1.pokemons[0] : player2.pokemons[0], 
                         player.id == 1 ? player2.pokemons[0] : player1.pokemons[0],
-                        player1.pokemons[0])]
+                        player1.pokemons)]
 
                 if (run) run()
             }

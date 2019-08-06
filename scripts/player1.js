@@ -19,9 +19,7 @@ function load_player1 () {
             return choice
         },
         think_move (current_pokemon, enemy_pokemon) {
-            // 0 BASED ARRAY
             let choice = Math.floor(Math.random()*current_pokemon.moves.length)
-
             return choice
         },
         think_switch (current_pokemon, enemy_pokemon, current_team) {
@@ -31,11 +29,12 @@ function load_player1 () {
                 if (current_team[i].name != current_pokemon.name && current_team[i].hp != 0) {
                     n++
                 }
+
+
             }
 
             let choice = Math.floor(Math.random()*n)
             return choice
-            
         }
     }
 }

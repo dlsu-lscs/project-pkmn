@@ -15,11 +15,13 @@ function load_player2 () {
         think_menu (self, enemy_trainer) {
             // 0 - FIGHT, 1 - SWITCH
             let choice = Math.floor(Math.random()*2)
+            console.log("CHOICE: " + choice)
             return choice
         },
         think_move (current_pokemon, enemy_pokemon) {
             // 0 BASED ARRAY
             let choice = Math.floor(Math.random()*current_pokemon.moves.length)
+            console.log("CHOICE: " + choice)
 
             return choice
         },
@@ -33,7 +35,7 @@ function load_player2 () {
             }
 
             let choice = Math.floor(Math.random()*n)
-            console.log(choice)
+            console.log("CHOICE: " + choice)
             return choice
             
         }
